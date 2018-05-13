@@ -7,7 +7,7 @@ public class InputNeuron extends Neuron {
 	public double inputWeight;
 	public InputNeuron(double minWeight, double maxWeight) {
 		Random r = new Random();
-		inputWeight = minWeight + (maxWeight - minWeight) * r.nextDouble();
+		inputWeight = 1;//minWeight + (maxWeight - minWeight) * r.nextDouble();
 	}
 	double value;
 	public void setInput(double input) {
@@ -20,6 +20,7 @@ public class InputNeuron extends Neuron {
 
 	public double weightLearnRate = 0.1;
 	public void learn(boolean win) {
+			
 		Random r = new Random();
 		if(win) {
 				 inputWeight += -weightLearnRate + (weightLearnRate + weightLearnRate) * r.nextDouble();

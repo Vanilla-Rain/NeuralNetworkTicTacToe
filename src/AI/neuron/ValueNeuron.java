@@ -32,7 +32,7 @@ public class ValueNeuron extends Neuron {
 		return output;
 	}
 	public double thresholdLearnRate = 0.05;
-	public double weightLearnRate = 0.05;
+	public double weightLearnRate = 0.1;
 	public void learn(boolean win) {
 		Random r = new Random();
 		if(win) {
