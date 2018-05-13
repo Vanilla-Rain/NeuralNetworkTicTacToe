@@ -31,8 +31,8 @@ public class ValueNeuron extends Neuron {
 		double output = 1 / (1 + Math.exp(-sum));
 		return output;
 	}
-	public double thresholdLearnRate = 0.01;
-	public double weightLearnRate = 0.01;
+	public double thresholdLearnRate = 0.05;
+	public double weightLearnRate = 0.05;
 	public void learn(boolean win) {
 		Random r = new Random();
 		if(win) {
