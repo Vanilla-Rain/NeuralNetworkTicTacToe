@@ -10,23 +10,25 @@ public class NeuralNetwork {
 	public ArrayList<Neuron> hiddens1;
 	public ArrayList<Neuron> hiddens2;
 	public ArrayList<Neuron> outputs;
-	public Double wins = 0.0;
+	public Integer wins = 0;
+	public int ties = 0;
+	public int losses = 0;
 	public NeuralNetwork() {
 		inputs = new ArrayList<Neuron>();
 		hiddens1 = new ArrayList<Neuron>();
 		hiddens2 = new ArrayList<Neuron>();
 		outputs = new ArrayList<Neuron>();
-		for(int i = 0; i < 18; i++) {
+		for(int i = 0; i < 27; i++) {
 			inputs.add(new InputNeuron(-1, 1));
 		}
 		for(int i = 0; i < 9; i++) {
-			hiddens1.add(new ValueNeuron(inputs,-1,1));
+			hiddens1.add(new ValueNeuron(inputs,-10,10));
 		}
 		for(int i = 0; i < 9; i++) {
-			hiddens2.add(new ValueNeuron(hiddens1,-1,1));
+			hiddens2.add(new ValueNeuron(hiddens1,-10,10));
 		}
 		for(int i = 0; i < 1; i++) {
-			outputs.add(new ValueNeuron(hiddens2,-1,1));
+			outputs.add(new ValueNeuron(hiddens2,-10,10));
 		}
 	}
 	public NeuralNetwork(NeuralNetwork n) {
@@ -56,8 +58,9 @@ public class NeuralNetwork {
 					newBoard[y-1][x-1] = myChar;
 					for(int z = 1; z <= 3; z++) {
 						for(int q = 1; q <= 3; q++) {
-								((InputNeuron)inputs.get(z * q - 1)).setInput(newBoard[q-1][z-1] == myChar ? 100 : -100);
-								((InputNeuron)inputs.get(z * q - 1 + 9)).setInput((newBoard[q-1][z-1] != myChar && newBoard[q-1][z-1] != ' ') ? 100 : -100);
+								((InputNeuron)inputs.get(z * q - 1)).setInput(newBoard[q-1][z-1] == myChar ? 1 : 0);
+								((InputNeuron)inputs.get(z * q - 1 + 9)).setInput((newBoard[q-1][z-1] != myChar && newBoard[q-1][z-1] != ' ') ? 1 : 0);
+								((InputNeuron)inputs.get(z * q - 1 + 18)).setInput(newBoard[q-1][z-1] == ' ' ? 1 : 0);
 						}
 					}
 					double value = ((ValueNeuron)outputs.get(0)).getValue();
@@ -73,7 +76,7 @@ public class NeuralNetwork {
 		
 	}
 	public void learn(boolean win) {
-		for(int i = 0; i < 18; i++) {
+		for(int i = 0; i < 27; i++) {
 			inputs.get(i).learn(win);
 		}
 		for(int i = 0; i < 9; i++) {

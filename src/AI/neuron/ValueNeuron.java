@@ -31,22 +31,26 @@ public class ValueNeuron extends Neuron {
 		double output = 1 / (1 + Math.exp(-sum));
 		return output;
 	}
-	public double thresholdLearnRate = 0.05;
-	public double weightLearnRate = 0.1;
+	public double thresholdLearnRate = 0.001;
+	public double weightLearnRate = 0.01;
 	public void learn(boolean win) {
 		Random r = new Random();
 		if(win) {
 			threshold += -thresholdLearnRate + (thresholdLearnRate + thresholdLearnRate) * r.nextDouble();
 			for(Map.Entry<Neuron, Double> entry : connected.entrySet()) {
-				 Double weight = entry.getValue();
-				 weight += -weightLearnRate + (weightLearnRate + weightLearnRate) * r.nextDouble();
+				if(Math.random() < 0.1) {
+					 Double weight = entry.getValue();
+					 weight += -weightLearnRate + (weightLearnRate + weightLearnRate) * r.nextDouble();
+				}
 			}
 		}
 		else {
 			threshold += 5 * (-thresholdLearnRate + (thresholdLearnRate + thresholdLearnRate) * r.nextDouble());
 			for(Map.Entry<Neuron, Double> entry : connected.entrySet()) {
+				if(Math.random() < 0.1) {
 				 Double weight = entry.getValue();
 				 weight += 5 * (-weightLearnRate + (weightLearnRate + weightLearnRate) * r.nextDouble());
+				}
 			}
 		}
 	}

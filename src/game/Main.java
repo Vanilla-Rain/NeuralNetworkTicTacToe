@@ -10,7 +10,7 @@ import AI.NeuralNetwork;
 import AI.Vector;
 
 public class Main {
-	static int aiCount = 50;
+	static int aiCount = 20;
 	static ArrayList<NeuralNetwork> ais = new ArrayList<NeuralNetwork>();
 
 	public static void main(String[] args) {
@@ -18,65 +18,82 @@ public class Main {
 			ais.add(new NeuralNetwork());
 		}
 		s = new Scanner(System.in);
-		for (int x = 0; x < 1000; x++) {
-			if(x % 10 == 0 && x != 0) {
+		for (int x = 0; x < 50; x++) {
 				System.out.println(x);
 				ArrayList<NeuralNetwork> newAis = new ArrayList<NeuralNetwork>();
 				Collections.sort(ais,new NeuralComparator());
-				for (int g = ais.size()-1; g > ais.size() / 2 ; g--) {
-				//	System.out.println(ais.get(g).wins);
+				for (int g = ais.size()-1; g > ais.size() - 3; g--) {
+					System.out.println("HIGH " + ais.get(g).wins + "/" + ais.get(g).losses + "/" + ais.get(g).ties);
+					ais.get(g).wins = 0;
+					ais.get(g).ties = 0;
+					ais.get(g).losses = 0;
 						newAis.add(ais.get(g));
+				}
+				for (int g = 0; g < 2; g++) {
+					System.out.println("LOW " + ais.get(g).wins + "/" + ais.get(g).losses + "/" + ais.get(g).ties);
 				}
 				ais = new ArrayList<NeuralNetwork>();
 				for(int i = 0; i < aiCount - newAis.size(); i++) {
 					 Random rand = new Random();
 					 int randd = rand.nextInt(newAis.size());
 					 NeuralNetwork n = new NeuralNetwork(newAis.get(randd));
-					 n.wins = newAis.get(randd).wins;
+					 n.wins = 0;
+					 n.learn(false);
 					ais.add(n);
 				}
 				ais.addAll(newAis);
-			}
 			Collections.shuffle(ais);
 			for (int i = 0; i < aiCount; i++) {
-				initialize();
-				NeuralNetwork aiX = ais.get(i);
-				NeuralNetwork aiO = ais.get(i + 1);
-				aiX.setChar('X');
-				aiO.setChar('O');
-				i++;
-				while (controlTurnsAI(aiX, aiO) == 0) {
-					 //s.next();
-				}
-				if (checkWinCondition(XTurn ? 'O' : 'X') == 1) {
-					//System.out.print((XTurn ? 'O' : 'X') + " Wins!\n\n");
-					if (XTurn) {
-						aiO.wins++;
-						aiX.wins-=100;
+				for(int j = 0; j < 100; j++) {
+					initialize();
+					NeuralNetwork aiX = ais.get(i);
+					aiX.setChar('X');
+					while (controlTurnsAIVRandomX(aiX) == 0) {
+						// s.next();
 					}
-						
-					else {
-						aiX.wins++;
-						aiO.wins -= 100;
+					if (checkWinCondition(XTurn ? 'O' : 'X') == 1) {
+						//System.out.print((XTurn ? 'O' : 'X') + " Wins!\n\n");
+						if (!XTurn) {
+							aiX.wins++;
+							//aiX.learn(true);
+						}
+						else {
+							aiX.losses++;
+							//aiX.learn(false);
+						}
+					} else {
+						aiX.ties++;
+					//	aiX.wins += 0.5;
+						//aiX.learn(true);
+					}/*
+					initialize();
+					aiX.setChar('O');
+					while (controlTurnsAIVRandomO(aiX) == 0) {
+					//	 s.next();
 					}
-					aiX.learn(XTurn ? false : true);
-					aiO.learn(XTurn ? true : false);
-				} else {
-					aiO.wins += 0.5;
-					aiX.wins += 0.5;
-				//	System.out.print("Draw. \n\n");
-					aiX.learn(true);
-					aiO.learn(true);
+					if (checkWinCondition(XTurn ? 'O' : 'X') == 1) {
+						//System.out.print((XTurn ? 'O' : 'X') + " Wins!\n\n");
+						if (XTurn) {
+							aiX.wins++;
+							//aiX.learn(true);
+						}
+						else {
+							aiX.losses++;
+							//aiX.learn(false);
+						}
+					} else {
+						aiX.ties++;
+					//	aiX.wins += 0.5;
+						//aiX.learn(true);
+					}*/
 				}
-				//s.next();
 			}
 			// System.out.println("press any key to go again");
 			// s.next();
 			XTurn = true;
 		}
-		Double mostWins = Double.NEGATIVE_INFINITY;
+		Integer mostWins = Integer.MIN_VALUE;
 		NeuralNetwork nw = null;
-		System.out.println(ais.size());
 		for (NeuralNetwork n : ais) {
 			if (n.wins > mostWins) {
 				nw = n;
@@ -144,7 +161,42 @@ public class Main {
 		XTurn = !XTurn;
 		return checkWinCondition(XTurn ? 'O' : 'X');
 	}
-
+	static int controlTurnsAIVRandomX(NeuralNetwork X) {
+		if(XTurn) {
+			Vector turn = X.getMove(board);
+			placeVector(turn, XTurn ? 'X' : 'O');
+		//	draw();
+			XTurn = !XTurn;
+		} else {
+			Vector v;
+			do {
+				Random r = new Random();
+				v = new Vector(r.nextInt(3),r.nextInt(3));
+			} while(board[v.x][v.y] != ' ');
+				placeVector(v, XTurn ? 'X' : 'O');
+			//	draw();
+			XTurn = !XTurn;
+		}
+		return checkWinCondition(XTurn ? 'O' : 'X');
+	}
+	static int controlTurnsAIVRandomO(NeuralNetwork O) {
+		if(!XTurn) {
+			Vector turn = O.getMove(board);
+			placeVector(turn, XTurn ? 'X' : 'O');
+			XTurn = !XTurn;
+		//	draw();
+		} else {
+			Vector v;
+			do {
+				Random r = new Random();
+				v = new Vector(r.nextInt(3),r.nextInt(3));
+			} while(board[v.x][v.y] != ' ');
+				placeVector(v, XTurn ? 'X' : 'O');
+			//	draw();
+			XTurn = !XTurn;
+		}
+		return checkWinCondition(XTurn ? 'O' : 'X');
+	}
 	static int controlTurnsAI(NeuralNetwork X, NeuralNetwork O) {
 
 		Vector turn = (XTurn ? X : O).getMove(board);
