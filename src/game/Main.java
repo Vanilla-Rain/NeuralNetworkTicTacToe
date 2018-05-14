@@ -40,12 +40,12 @@ public class Main {
 			ais.add(new NeuralNetwork());
 		}
 		s = new Scanner(System.in);
-		for (int x = 0; x < 100; x++) {
-				//System.out.println(x);
+		for (int x = 0; x < 50; x++) {
+				System.out.println(x);
 				ArrayList<NeuralNetwork> newAis = new ArrayList<NeuralNetwork>();
 				Collections.sort(ais,new NeuralComparator());
 				int highRatio = 0;
-				for (int g = ais.size()-1; g > ais.size() - 6; g--) {
+				for (int g = ais.size()-1; g > ais.size() - 5; g--) {
 					if(g == ais.size() - 1) {
 						//System.out.println(x + " " + ais.get(g).wins);
 						
@@ -55,13 +55,13 @@ public class Main {
 							}
 							
 						
-						
+							
 					}
 					System.out.println("HIGH " + ais.get(g).wins + "/" + ais.get(g).losses + "/" + ais.get(g).ties);
 					ais.get(g).wins = 0;
 					ais.get(g).ties = 0;
 					ais.get(g).losses = 0;
-					ais.get(g).learn(true);
+					ais.get(g).learn(false);
 						newAis.add(ais.get(g));
 				}
 				int lowRatio = ais.get(0).wins - ais.get(0).losses;
@@ -89,7 +89,11 @@ public class Main {
 					initialize();
 					NeuralNetwork aiX = ais.get(i);
 					aiX.setChar('X');
-					while (controlTurnsAIVRandomX(aiX) == 0) {
+					Random rand = new Random();
+					 int randd = rand.nextInt(ais.size());
+					NeuralNetwork aiO = ais.get(randd);
+					aiO.setChar('O');
+					while (controlTurnsAI(aiX, aiO) == 0) {
 						// s.next();
 					}
 					if (checkWinCondition(XTurn ? 'O' : 'X') == 1) {
@@ -110,7 +114,8 @@ public class Main {
 					}
 					initialize();
 					aiX.setChar('O');
-					while (controlTurnsAIVRandomO(aiX) == 0) {
+					aiO.setChar('X');
+					while (controlTurnsAI(aiO, aiX) == 0) {
 					//	 s.next();
 					}
 					if (checkWinCondition(XTurn ? 'O' : 'X') == 1) {

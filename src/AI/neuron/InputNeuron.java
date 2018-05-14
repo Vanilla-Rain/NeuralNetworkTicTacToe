@@ -18,7 +18,7 @@ public class InputNeuron extends Neuron {
 		return value;
 	}
 
-	public double weightLearnRate = 0.01;
+	public double weightLearnRate = 0.1;
 	public void learn(boolean win) {
 			
 		Random r = new Random();

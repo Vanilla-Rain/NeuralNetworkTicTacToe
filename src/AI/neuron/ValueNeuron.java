@@ -10,7 +10,7 @@ public class ValueNeuron extends Neuron {
 
 	public HashMap<Neuron, Double> connected = new HashMap<Neuron, Double>();
 	double threshold = 0;
-	public ValueNeuron(ArrayList<Neuron> hiddens, double minWeight, double maxWeight) {
+	public ValueNeuron(ArrayList<Neuron> hiddens, double minWeight, double maxWeight, double minThreshold, double maxThreshold) {
 		Random r = new Random();
 		for (Neuron n : hiddens) {
 
@@ -31,8 +31,8 @@ public class ValueNeuron extends Neuron {
 		double output = 1 / (1 + Math.exp(-sum));
 		return output;
 	}
-	public double thresholdLearnRate = 0.01;
-	public double weightLearnRate = 0.01;
+	public double thresholdLearnRate = 0.1;
+	public double weightLearnRate = 0.1;
 	public void learn(boolean win) {
 		Random r = new Random();
 		if(win) {
