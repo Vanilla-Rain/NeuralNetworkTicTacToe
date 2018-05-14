@@ -9,8 +9,10 @@ public class NeuralComparator implements Comparator<NeuralNetwork> {
 		if(o1.wins - o1.losses > o2.wins -o2.losses) {
 			return 1;
 		}
-		else
+		else if(o1.wins - o1.losses < o2.wins - o2.losses)
 			return -1;
+		else
+			return 0;
 	}
 
 }

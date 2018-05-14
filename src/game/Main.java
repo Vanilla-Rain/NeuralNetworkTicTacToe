@@ -1,5 +1,11 @@
 package game;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
@@ -10,27 +16,62 @@ import AI.NeuralNetwork;
 import AI.Vector;
 
 public class Main {
-	static int aiCount = 20;
+	static int aiCount = 100;
 	static ArrayList<NeuralNetwork> ais = new ArrayList<NeuralNetwork>();
 
 	public static void main(String[] args) {
+		File f = new File("output.txt");
+		FileWriter fileWriter = null;
+		try {
+			
+			System.out.println(f.getAbsolutePath());
+			if(!f.exists())
+				f.createNewFile();
+			else {
+				f.delete();
+				f.createNewFile();
+			}
+			 fileWriter = new FileWriter(f);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		for (int i = 0; i < aiCount; i++) {
 			ais.add(new NeuralNetwork());
 		}
 		s = new Scanner(System.in);
-		for (int x = 0; x < 50; x++) {
-				System.out.println(x);
+		for (int x = 0; x < 100; x++) {
+				//System.out.println(x);
 				ArrayList<NeuralNetwork> newAis = new ArrayList<NeuralNetwork>();
 				Collections.sort(ais,new NeuralComparator());
-				for (int g = ais.size()-1; g > ais.size() - 3; g--) {
+				int highRatio = 0;
+				for (int g = ais.size()-1; g > ais.size() - 6; g--) {
+					if(g == ais.size() - 1) {
+						//System.out.println(x + " " + ais.get(g).wins);
+						
+							if(x != 0) {
+								highRatio = ais.get(g).wins - ais.get(g).losses;
+								
+							}
+							
+						
+						
+					}
 					System.out.println("HIGH " + ais.get(g).wins + "/" + ais.get(g).losses + "/" + ais.get(g).ties);
 					ais.get(g).wins = 0;
 					ais.get(g).ties = 0;
 					ais.get(g).losses = 0;
+					ais.get(g).learn(true);
 						newAis.add(ais.get(g));
 				}
-				for (int g = 0; g < 2; g++) {
+				int lowRatio = ais.get(0).wins - ais.get(0).losses;
+				for (int g = 0; g < 5; g++) {
 					System.out.println("LOW " + ais.get(g).wins + "/" + ais.get(g).losses + "/" + ais.get(g).ties);
+				}try {
+				fileWriter.write(((highRatio + lowRatio) / 2) + "\r\n");
+				fileWriter.flush();
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
 				ais = new ArrayList<NeuralNetwork>();
 				for(int i = 0; i < aiCount - newAis.size(); i++) {
@@ -44,7 +85,7 @@ public class Main {
 				ais.addAll(newAis);
 			Collections.shuffle(ais);
 			for (int i = 0; i < aiCount; i++) {
-				for(int j = 0; j < 100; j++) {
+				for(int j = 0; j < 50; j++) {
 					initialize();
 					NeuralNetwork aiX = ais.get(i);
 					aiX.setChar('X');
@@ -58,6 +99,7 @@ public class Main {
 							//aiX.learn(true);
 						}
 						else {
+						//	aiX.learn(true);
 							aiX.losses++;
 							//aiX.learn(false);
 						}
@@ -65,7 +107,7 @@ public class Main {
 						aiX.ties++;
 					//	aiX.wins += 0.5;
 						//aiX.learn(true);
-					}/*
+					}
 					initialize();
 					aiX.setChar('O');
 					while (controlTurnsAIVRandomO(aiX) == 0) {
@@ -78,6 +120,7 @@ public class Main {
 							//aiX.learn(true);
 						}
 						else {
+						//	aiX.learn(true);
 							aiX.losses++;
 							//aiX.learn(false);
 						}
@@ -85,7 +128,7 @@ public class Main {
 						aiX.ties++;
 					//	aiX.wins += 0.5;
 						//aiX.learn(true);
-					}*/
+					}
 				}
 			}
 			// System.out.println("press any key to go again");
@@ -99,6 +142,12 @@ public class Main {
 				nw = n;
 				mostWins = n.wins;
 			}
+		}
+		try {
+			fileWriter.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		while(true) {
 		initialize();

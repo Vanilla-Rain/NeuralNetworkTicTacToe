@@ -23,12 +23,12 @@ public class InputNeuron extends Neuron {
 			
 		Random r = new Random();
 		if(win) {
-			if(Math.random() < 0.1) {
+			if(Math.random() < 0.5) {
 				 inputWeight += -weightLearnRate + (weightLearnRate + weightLearnRate) * r.nextDouble();
 			}
 		}
 		else {
-			if(Math.random() < 0.1) {
+			if(Math.random() < 0.5) {
 				 inputWeight += 5 * (-weightLearnRate + (weightLearnRate + weightLearnRate) * r.nextDouble());
 			}
 		}

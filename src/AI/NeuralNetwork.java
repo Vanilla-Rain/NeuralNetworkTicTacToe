@@ -8,7 +8,7 @@ public class NeuralNetwork {
 	char myChar = 'X';
 	public ArrayList<Neuron> inputs;
 	public ArrayList<Neuron> hiddens1;
-	public ArrayList<Neuron> hiddens2;
+//	public ArrayList<Neuron> hiddens2;
 	public ArrayList<Neuron> outputs;
 	public Integer wins = 0;
 	public int ties = 0;
@@ -16,25 +16,25 @@ public class NeuralNetwork {
 	public NeuralNetwork() {
 		inputs = new ArrayList<Neuron>();
 		hiddens1 = new ArrayList<Neuron>();
-		hiddens2 = new ArrayList<Neuron>();
+		//hiddens2 = new ArrayList<Neuron>();
 		outputs = new ArrayList<Neuron>();
 		for(int i = 0; i < 27; i++) {
 			inputs.add(new InputNeuron(-1, 1));
 		}
-		for(int i = 0; i < 9; i++) {
-			hiddens1.add(new ValueNeuron(inputs,-10,10));
+		for(int i = 0; i < 15; i++) {
+			hiddens1.add(new ValueNeuron(inputs,-1,1));
 		}
-		for(int i = 0; i < 9; i++) {
-			hiddens2.add(new ValueNeuron(hiddens1,-10,10));
-		}
+		//for(int i = 0; i < 3; i++) {
+		//	hiddens2.add(new ValueNeuron(hiddens1,-1,1));
+		//}
 		for(int i = 0; i < 1; i++) {
-			outputs.add(new ValueNeuron(hiddens2,-10,10));
+			outputs.add(new ValueNeuron(hiddens1,-1,1));
 		}
 	}
 	public NeuralNetwork(NeuralNetwork n) {
 		this.inputs = n.inputs;
 		this.hiddens1 = n.hiddens1;
-		this.hiddens2 = n.hiddens2;
+	//	this.hiddens2 = n.hiddens2;
 		this.outputs = n.outputs;
 		learn(false);
 	}
@@ -79,12 +79,12 @@ public class NeuralNetwork {
 		for(int i = 0; i < 27; i++) {
 			inputs.get(i).learn(win);
 		}
-		for(int i = 0; i < 9; i++) {
+		for(int i = 0; i < 15; i++) {
 			hiddens1.get(i).learn(win);
 		}
-		for(int i = 0; i < 9; i++) {
-			hiddens2.get(i).learn(win);
-		}
+		//for(int i = 0; i < 3; i++) {
+		//	hiddens2.get(i).learn(win);
+		//}
 		for(int i = 0; i < 1; i++) {
 			outputs.get(i).learn(win);
 		}
