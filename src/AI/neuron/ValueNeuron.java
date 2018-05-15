@@ -13,7 +13,6 @@ public class ValueNeuron extends Neuron {
 	public ValueNeuron(ArrayList<Neuron> hiddens, double minWeight, double maxWeight, double minThreshold, double maxThreshold) {
 		Random r = new Random();
 		for (Neuron n : hiddens) {
-
 			double rWeight = minWeight + (maxWeight - minWeight) * r.nextDouble();
 			connected.put(n, rWeight);
 		}
@@ -33,29 +32,17 @@ public class ValueNeuron extends Neuron {
 	}
 	public double thresholdLearnRate = 0.1;
 	public double weightLearnRate = 0.1;
-	public void learn(boolean win) {
+	public void learn(double amount) {
 		Random r = new Random();
-		if(win) {
-			if(Math.random() < 0.5) {
-			threshold += -thresholdLearnRate + (thresholdLearnRate + thresholdLearnRate) * r.nextDouble();
-		}
-			for(Map.Entry<Neuron, Double> entry : connected.entrySet()) {
-				if(Math.random() < 0.5) {
-					 Double weight = entry.getValue();
-					 weight += -weightLearnRate + (weightLearnRate + weightLearnRate) * r.nextDouble();
-				}
-			}
-		}
-		else {
-			if(Math.random() < 0.5) {
-			threshold += 5 * (-thresholdLearnRate + (thresholdLearnRate + thresholdLearnRate) * r.nextDouble());
+			if(Math.random() < 0.1) {
+			threshold += amount * (-thresholdLearnRate + (thresholdLearnRate + thresholdLearnRate) * r.nextDouble());
 			}
 			for(Map.Entry<Neuron, Double> entry : connected.entrySet()) {
-				if(Math.random() < 0.5) {
+				if(Math.random() < 0.1) {
 				 Double weight = entry.getValue();
-				 weight += 5 * (-weightLearnRate + (weightLearnRate + weightLearnRate) * r.nextDouble());
+				 weight += amount * (-weightLearnRate + (weightLearnRate + weightLearnRate) * r.nextDouble());
+				 connected.put(entry.getKey(), weight);
 				}
 			}
-		}
 	}
 }

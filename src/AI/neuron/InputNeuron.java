@@ -18,19 +18,11 @@ public class InputNeuron extends Neuron {
 		return value;
 	}
 
-	public double weightLearnRate = 0.1;
-	public void learn(boolean win) {
-			
+	public double weightLearnRate = 0.01;
+	public void learn(double amount) {
 		Random r = new Random();
-		if(win) {
-			if(Math.random() < 0.5) {
-				 inputWeight += -weightLearnRate + (weightLearnRate + weightLearnRate) * r.nextDouble();
+			if(Math.random() < 0.1) {
+				 inputWeight += amount * (-weightLearnRate + (weightLearnRate + weightLearnRate) * r.nextDouble());
 			}
-		}
-		else {
-			if(Math.random() < 0.5) {
-				 inputWeight += 5 * (-weightLearnRate + (weightLearnRate + weightLearnRate) * r.nextDouble());
-			}
-		}
 	}
 }

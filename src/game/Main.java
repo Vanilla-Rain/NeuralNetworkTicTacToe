@@ -40,49 +40,53 @@ public class Main {
 			ais.add(new NeuralNetwork());
 		}
 		s = new Scanner(System.in);
-		for (int x = 0; x < 50; x++) {
+		for (int x = 0; x < 1000; x++) {
 				System.out.println(x);
-				ArrayList<NeuralNetwork> newAis = new ArrayList<NeuralNetwork>();
-				Collections.sort(ais,new NeuralComparator());
-				int highRatio = 0;
-				for (int g = ais.size()-1; g > ais.size() - 5; g--) {
-					if(g == ais.size() - 1) {
-						//System.out.println(x + " " + ais.get(g).wins);
-						
-							if(x != 0) {
-								highRatio = ais.get(g).wins - ais.get(g).losses;
+				if(x != 0) {
+					ArrayList<NeuralNetwork> newAis = new ArrayList<NeuralNetwork>();
+					Collections.sort(ais,new NeuralComparator());
+					int highRatio = 0;
+					for (int g = ais.size()-1; g > ais.size() - 2; g--) {
+						if(g == ais.size() - 1) {
+							//System.out.println(x + " " + ais.get(g).wins);
+							System.out.println("HIGH " + ais.get(g).wins + "/" + ais.get(g).losses + "/" + ais.get(g).ties);
+								if(x != 0) {
+									highRatio = ais.get(g).wins - ais.get(g).losses;
+									
+								}
 								
-							}
 							
+								
+						}
+						//ais.get(g).learn(ais.get(g).wins - ais.get(g).losses);
+						ais.get(g).wins = 0;
+						ais.get(g).ties = 0;
+						ais.get(g).losses = 0;
 						
-							
+							newAis.add(ais.get(g));
 					}
-					System.out.println("HIGH " + ais.get(g).wins + "/" + ais.get(g).losses + "/" + ais.get(g).ties);
-					ais.get(g).wins = 0;
-					ais.get(g).ties = 0;
-					ais.get(g).losses = 0;
-					ais.get(g).learn(false);
-						newAis.add(ais.get(g));
+					int lowRatio = ais.get(0).wins - ais.get(0).losses;
+					for (int g = 0; g < 1; g++) {
+						System.out.println("LOW " + ais.get(g).wins + "/" + ais.get(g).losses + "/" + ais.get(g).ties);
+					}try {
+					fileWriter.write(((highRatio + lowRatio) / 2) + "\r\n");
+					fileWriter.flush();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					ais = new ArrayList<NeuralNetwork>();
+					for(int i = 0; i < aiCount - newAis.size(); i++) {
+						 Random rand = new Random();
+						 int randd = rand.nextInt(newAis.size());
+						 NeuralNetwork n = new NeuralNetwork(newAis.get(randd));
+						 n.wins = 0;
+						// n.learn(1);
+						ais.add(n);
+					}
+					ais.addAll(newAis);
 				}
-				int lowRatio = ais.get(0).wins - ais.get(0).losses;
-				for (int g = 0; g < 5; g++) {
-					System.out.println("LOW " + ais.get(g).wins + "/" + ais.get(g).losses + "/" + ais.get(g).ties);
-				}try {
-				fileWriter.write(((highRatio + lowRatio) / 2) + "\r\n");
-				fileWriter.flush();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				ais = new ArrayList<NeuralNetwork>();
-				for(int i = 0; i < aiCount - newAis.size(); i++) {
-					 Random rand = new Random();
-					 int randd = rand.nextInt(newAis.size());
-					 NeuralNetwork n = new NeuralNetwork(newAis.get(randd));
-					 n.wins = 0;
-					 n.learn(false);
-					ais.add(n);
-				}
-				ais.addAll(newAis);
+				
+			
 			Collections.shuffle(ais);
 			for (int i = 0; i < aiCount; i++) {
 				for(int j = 0; j < 50; j++) {
@@ -93,8 +97,8 @@ public class Main {
 					 int randd = rand.nextInt(ais.size());
 					NeuralNetwork aiO = ais.get(randd);
 					aiO.setChar('O');
-					while (controlTurnsAI(aiX, aiO) == 0) {
-						// s.next();
+					while (controlTurnsAIVRandomX(aiX) == 0) {
+					//	 s.next();
 					}
 					if (checkWinCondition(XTurn ? 'O' : 'X') == 1) {
 						//System.out.print((XTurn ? 'O' : 'X') + " Wins!\n\n");
@@ -105,6 +109,7 @@ public class Main {
 						else {
 						//	aiX.learn(true);
 							aiX.losses++;
+						//	aiX.learn(0.001);
 							//aiX.learn(false);
 						}
 					} else {
@@ -115,8 +120,8 @@ public class Main {
 					initialize();
 					aiX.setChar('O');
 					aiO.setChar('X');
-					while (controlTurnsAI(aiO, aiX) == 0) {
-					//	 s.next();
+					while (controlTurnsAIVRandomO(aiX) == 0) {
+						// s.next();
 					}
 					if (checkWinCondition(XTurn ? 'O' : 'X') == 1) {
 						//System.out.print((XTurn ? 'O' : 'X') + " Wins!\n\n");
@@ -127,6 +132,7 @@ public class Main {
 						else {
 						//	aiX.learn(true);
 							aiX.losses++;
+							aiX.learn(1);
 							//aiX.learn(false);
 						}
 					} else {
@@ -219,7 +225,7 @@ public class Main {
 		if(XTurn) {
 			Vector turn = X.getMove(board);
 			placeVector(turn, XTurn ? 'X' : 'O');
-		//	draw();
+			//draw();
 			XTurn = !XTurn;
 		} else {
 			Vector v;
@@ -238,7 +244,7 @@ public class Main {
 			Vector turn = O.getMove(board);
 			placeVector(turn, XTurn ? 'X' : 'O');
 			XTurn = !XTurn;
-		//	draw();
+			//draw();
 		} else {
 			Vector v;
 			do {
@@ -246,7 +252,7 @@ public class Main {
 				v = new Vector(r.nextInt(3),r.nextInt(3));
 			} while(board[v.x][v.y] != ' ');
 				placeVector(v, XTurn ? 'X' : 'O');
-			//	draw();
+				//draw();
 			XTurn = !XTurn;
 		}
 		return checkWinCondition(XTurn ? 'O' : 'X');
@@ -256,7 +262,7 @@ public class Main {
 		Vector turn = (XTurn ? X : O).getMove(board);
 		placeVector(turn, XTurn ? 'X' : 'O');
 		XTurn = !XTurn;
-	//	draw();
+		//draw();
 		//s.next();
 		return checkWinCondition(XTurn ? 'O' : 'X');
 	}
